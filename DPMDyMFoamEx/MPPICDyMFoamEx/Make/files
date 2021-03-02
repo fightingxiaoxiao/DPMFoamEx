@@ -1,0 +1,3 @@
+MPPICDyMFoamEx.C
+
+EXE = $(FOAM_APPBIN)/MPPICDyMFoamEx

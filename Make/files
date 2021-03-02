@@ -1,0 +1,3 @@
+DPMFoamEx.C
+
+EXE = $(FOAM_APPBIN)/DPMFoamEx

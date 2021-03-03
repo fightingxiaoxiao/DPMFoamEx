@@ -58,6 +58,7 @@ Description
 #include "singlePhaseTransportModel.H"
 #include "DPMIncompressibleTurbulenceModel.H"
 #include "pimpleControl.H"
+#include "fvOptions.H"
 
 #ifdef MPPIC
     #include "basicKinematicCloud.H"

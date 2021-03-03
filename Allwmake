@@ -7,7 +7,7 @@ wmake $targetType DPMTurbulenceModels
 
 wmake $targetType
 wmake $targetType MPPICFoamEx
-wmake $targetType DPMDyMFoamEx
-wmake $targetType DPMDyMFoamEx/MPPICDyMFoamEx
+#wmake $targetType DPMDyMFoamEx
+#wmake $targetType DPMDyMFoamEx/MPPICDyMFoamEx
 
 #------------------------------------------------------------------------------

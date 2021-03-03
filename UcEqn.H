@@ -4,7 +4,7 @@ fvVectorMatrix UcEqn
   - fvm::Sp(fvc::ddt(alphac) + fvc::div(alphaPhic), Uc)
   + continuousPhaseTurbulence->divDevRhoReff(Uc)
  ==
-    (1.0/rhoc)*cloudSU
+    (1.0/rhoc)*cloudSU + fvOptions(Uc)
 );
 
 UcEqn.relax();
@@ -17,6 +17,9 @@ surfaceScalarField phicForces
    fvc::flux(rAUc*cloudVolSUSu/rhoc) + rAUcf*(g & mesh.Sf())
 );
 
+fvOptions.constrain(UcEqn);
+
+
 if (pimple.momentumPredictor())
 {
     solve
@@ -25,7 +28,9 @@ if (pimple.momentumPredictor())
      ==
         fvc::reconstruct
         (
-            phicForces/rAUcf - fvc::snGrad(p)*mesh.magSf()
+            phicForces/rAUcf - fvc::snGrad(p_rgh)*mesh.magSf()
         )
     );
+
+    fvOptions.correct(Uc);
 }

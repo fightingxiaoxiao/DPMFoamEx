@@ -28,12 +28,12 @@ volVectorField Uc
     mesh
 );
 
-Info<< "Reading field p\n" << endl;
-volScalarField p
+Info<< "Reading field p_rgh\n" << endl;
+volScalarField p_rgh
 (
     IOobject
     (
-        "p",
+        "p_rgh",
         runTime.timeName(),
         mesh,
         IOobject::MUST_READ,
@@ -41,7 +41,6 @@ volScalarField p
     ),
     mesh
 );
-
 
 Info<< "Reading/calculating continuous-phase face flux field phic\n"
     << endl;
@@ -59,10 +58,49 @@ surfaceScalarField phic
     linearInterpolate(Uc) & mesh.Sf()
 );
 
+// Kinematic density
+
+#include "readhRef.H"
+#include "gh.H"
+
+volScalarField p
+(
+    IOobject
+    (
+        "p",
+        runTime.timeName(),
+        mesh,
+        IOobject::NO_READ,
+        IOobject::AUTO_WRITE
+    ),
+    p_rgh + 1.0*gh //在不可压缩求解器，rho可以设置为运动密度，即 1.0
+);
+
 label pRefCell = 0;
 scalar pRefValue = 0.0;
-setRefCell(p, pimple.dict(), pRefCell, pRefValue);
-mesh.setFluxRequired(p.name());
+setRefCell
+(
+    p,
+    p_rgh,
+    pimple.dict(),
+    pRefCell, 
+    pRefValue
+);
+
+mesh.setFluxRequired(p_rgh.name());
+
+if (p_rgh.needReference())
+{
+    p += dimensionedScalar
+    (
+        "p",
+        p.dimensions(),
+        pRefValue - getRefCellValue(p, pRefCell)
+    );
+}
+
+#include "createFvOptions.H"
+
 
 Info<< "Creating turbulence model\n" << endl;
 
@@ -173,3 +211,4 @@ continuousPhaseTurbulence
         continuousPhaseTransport
     )
 );
+

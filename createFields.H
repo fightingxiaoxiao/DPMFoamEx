@@ -110,7 +110,7 @@ volScalarField p
         IOobject::NO_READ,
         IOobject::AUTO_WRITE
     ),
-    p_rgh + rhoc*gh //在不可压缩求解器，rho可以设置为运动密度，即 1.0
+    p_rgh + rhoc * gh
 );
 
 label pRefCell = 0;
@@ -173,6 +173,7 @@ basicKinematicTypeCloud kinematicCloud
 );
 
 // Particle fraction upper limit
+Info<< "Particle fraction upper limit " << endl;
 scalar alphacMin
 (
     1.0
@@ -183,6 +184,7 @@ scalar alphacMin
 );
 
 // Update alphac from the particle locations
+Info<< "Update alphac from the particle locations " << endl;
 alphac = max(1.0 - kinematicCloud.theta(), alphacMin);
 alphac.correctBoundaryConditions();
 
@@ -212,3 +214,4 @@ continuousPhaseTurbulence
     )
 );
 
+Info<< "Create fields end." << endl;

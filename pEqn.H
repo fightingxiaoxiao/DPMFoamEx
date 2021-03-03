@@ -49,7 +49,7 @@
     }
     #include "continuityErrs.H"
 
-    p == p_rgh + 1.0*gh;
+    p == p_rgh + rhoc*gh;
 
     if (p_rgh.needReference())
     {
@@ -59,6 +59,6 @@
             p.dimensions(),
             pRefValue - getRefCellValue(p, pRefCell)
         );
-        p_rgh = p - 1.0*gh;
+        p_rgh = p - rhoc*gh;
     }
 }

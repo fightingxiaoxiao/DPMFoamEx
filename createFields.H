@@ -110,7 +110,7 @@ volScalarField p
         IOobject::NO_READ,
         IOobject::AUTO_WRITE
     ),
-    p_rgh + rhoc * gh
+    p_rgh + gh
 );
 
 label pRefCell = 0;

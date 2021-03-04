@@ -96,7 +96,6 @@ volScalarField muc
     rhoc*continuousPhaseTransport.nu()
 );
 
-
 #include "readhRef.H"
 #include "gh.H"
 

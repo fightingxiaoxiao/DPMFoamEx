@@ -6,7 +6,7 @@ fvVectorMatrix UcEqn
   + fvc::div(alphaPhic), Uc)
   + continuousPhaseTurbulence->divDevRhoReff(Uc)
  ==
-    cloudSU*(1.0/rhoc)
+    (1.0/rhoc)*cloudSU
   + fvOptions(Uc)
 );
 

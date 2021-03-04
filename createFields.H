@@ -173,7 +173,6 @@ basicKinematicTypeCloud kinematicCloud
 );
 
 // Particle fraction upper limit
-Info<< "Particle fraction upper limit " << endl;
 scalar alphacMin
 (
     1.0
@@ -184,7 +183,6 @@ scalar alphacMin
 );
 
 // Update alphac from the particle locations
-Info<< "Update alphac from the particle locations " << endl;
 alphac = max(1.0 - kinematicCloud.theta(), alphacMin);
 alphac.correctBoundaryConditions();
 
@@ -213,5 +211,3 @@ continuousPhaseTurbulence
         continuousPhaseTransport
     )
 );
-
-Info<< "Create fields end." << endl;

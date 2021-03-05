@@ -1,5 +1,5 @@
 {
-    volVectorField HbyA(constrainHbyA(rAUc*UcEqn.H(), Uc, p_rgh));
+    volVectorField HbyA(constrainHbyA(rAUc*UcEqn.H(), Uc, p));
 
     surfaceScalarField phiHbyA
     (
@@ -10,56 +10,44 @@
         )
     );
 
-
-    adjustPhi(phiHbyA, Uc, p_rgh);
-    
-
+    if (p.needReference())
+    {
+        adjustPhi(phiHbyA, Uc, p);
+    }
     
     phiHbyA += phicForces;
 
     // Update the pressure BCs to ensure flux consistency
-    constrainPressure(p_rgh, Uc, phiHbyA, rAUcf);
+    constrainPressure(p, Uc, phiHbyA, rAUcf);
 
     // Non-orthogonal pressure corrector loop
     while (pimple.correctNonOrthogonal())
     {
-        fvScalarMatrix p_rghEqn
+        fvScalarMatrix pEqn
         (
-            fvm::laplacian(alphacf*rAUcf, p_rgh)
+            fvm::laplacian(alphacf*rAUcf, p)
          ==
             fvc::ddt(alphac) + fvc::div(alphacf*phiHbyA)
         );
 
-        p_rghEqn.setReference(pRefCell, pRefValue);
+        pEqn.setReference(pRefCell, pRefValue);
 
-        p_rghEqn.solve(mesh.solver(p_rgh.select(pimple.finalInnerIter())));
+        pEqn.solve(mesh.solver(p.select(pimple.finalInnerIter())));
 
         if (pimple.finalNonOrthogonalIter())
         {
-            phic = phiHbyA - p_rghEqn.flux()/alphacf;
+            phic = phiHbyA - pEqn.flux()/alphacf;
 
-            p_rghEqn.relax();
+            pEqn.relax();
 
             Uc = HbyA
-              + rAUc*fvc::reconstruct((phicForces - p_rghEqn.flux()/alphacf)/rAUcf);
+              + rAUc*fvc::reconstruct((phicForces - pEqn.flux()/alphacf)/rAUcf);
 
             Uc.correctBoundaryConditions();
 
             fvOptions.correct(Uc);
         }
     }
-    #include "continuityErrs.H"
-
-    p == p_rgh + gh;
-
-    if (p_rgh.needReference())
-    {
-        p += dimensionedScalar
-        (
-            "p",
-            p.dimensions(),
-            pRefValue - getRefCellValue(p, pRefCell)
-        );
-        p_rgh = p - gh;
-    }
 }
+
+#include "continuityErrs.H"

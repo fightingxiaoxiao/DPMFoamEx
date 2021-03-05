@@ -28,12 +28,12 @@ volVectorField Uc
     mesh
 );
 
-Info<< "Reading field p_rgh\n" << endl;
-volScalarField p_rgh
+Info<< "Reading field p\n" << endl;
+volScalarField p
 (
     IOobject
     (
-        "p_rgh",
+        "p",
         runTime.timeName(),
         mesh,
         IOobject::MUST_READ,
@@ -57,6 +57,19 @@ surfaceScalarField phic
     ),
     linearInterpolate(Uc) & mesh.Sf()
 );
+
+label pRefCell = 0;
+scalar pRefValue = 0.0;
+setRefCell
+(
+    p,
+    pimple.dict(),
+    pRefCell, 
+    pRefValue
+);
+mesh.setFluxRequired(p.name());
+
+#include "createFvOptions.H"
 
 Info<< "Creating turbulence model\n" << endl;
 
@@ -96,46 +109,7 @@ volScalarField muc
     rhoc*continuousPhaseTransport.nu()
 );
 
-#include "readhRef.H"
-#include "gh.H"
 
-volScalarField p
-(
-    IOobject
-    (
-        "p",
-        runTime.timeName(),
-        mesh,
-        IOobject::NO_READ,
-        IOobject::AUTO_WRITE
-    ),
-    p_rgh + gh
-);
-
-label pRefCell = 0;
-scalar pRefValue = 0.0;
-setRefCell
-(
-    p,
-    p_rgh,
-    pimple.dict(),
-    pRefCell, 
-    pRefValue
-);
-
-mesh.setFluxRequired(p_rgh.name());
-
-if (p_rgh.needReference())
-{
-    p += dimensionedScalar
-    (
-        "p",
-        p.dimensions(),
-        pRefValue - getRefCellValue(p, pRefCell)
-    );
-}
-
-#include "createFvOptions.H"
 
 
 

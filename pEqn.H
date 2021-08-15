@@ -38,7 +38,7 @@
         {
             phic = phiHbyA - pEqn.flux()/alphacf;
 
-            pEqn.relax();
+            p.relax();
 
             Uc = HbyA
               + rAUc*fvc::reconstruct((phicForces - pEqn.flux()/alphacf)/rAUcf);

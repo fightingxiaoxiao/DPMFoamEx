@@ -4,6 +4,9 @@
         "controlDict": "OpenFOAM",
         "blockMeshDict": "OpenFOAM",
         "*.so": "bat",
-        "pEqn.H": "cpp"
+        "*.H": "cpp",
+        "pEqn.H": "cpp",
+        "DPMFoamEx.C": "cpp",
+        "dimensionedType.C": "cpp"
     }
 }

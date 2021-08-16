@@ -118,6 +118,8 @@ int main(int argc, char *argv[])
         alphacf = fvc::interpolate(alphac);
         alphaPhic = alphacf*phic;
 
+        #include "correctK.H"
+        
         fvVectorMatrix cloudSU(kinematicCloud.SU(Uc));
         volVectorField cloudVolSUSu
         (
@@ -136,6 +138,7 @@ int main(int argc, char *argv[])
         cloudVolSUSu.correctBoundaryConditions();
         cloudSU.source() = Zero;
 
+        
 //         cloudVolSUSu.primitiveFieldRef() =
 //             (cloudSU.diag()*Uc() - cloudSU.source())/mesh.V();
 //         cloudVolSUSu.correctBoundaryConditions();

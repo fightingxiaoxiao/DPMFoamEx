@@ -118,8 +118,6 @@ int main(int argc, char *argv[])
         alphacf = fvc::interpolate(alphac);
         alphaPhic = alphacf*phic;
 
-        #include "correctK.H"
-        
         fvVectorMatrix cloudSU(kinematicCloud.SU(Uc));
         volVectorField cloudVolSUSu
         (
